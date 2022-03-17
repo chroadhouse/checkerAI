@@ -6,6 +6,8 @@ Created on Thu Mar 17 14:06:26 2022
 @author: charlieroadhouse
 """
 
+#Agent is inheriting from the data - this is the for the random agent
+
 from abc import ABC
 from abc import abstractmethod
 from typing import List
@@ -68,3 +70,9 @@ class myAgent(Agent):
             done: information about end of game.
         """
         pass
+
+class MyRandomAgentLight(myAgent):
+    def __init__(
+        self,
+    ):
+        super().__init__(Constants().LIGHT)
