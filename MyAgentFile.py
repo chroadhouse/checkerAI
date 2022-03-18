@@ -18,7 +18,7 @@ from seoulai_gym.envs.checkers.rules import Rules
 from seoulai_gym.envs.checkers.utils import generate_random_move
 from seoulai_gym.envs.checkers.agents import Agent
 
-class myAgent(Agent):
+class MyAgent(Agent):
     def __init__(
             self,
             ptype: int,
@@ -33,10 +33,8 @@ class myAgent(Agent):
     
         super().__init__(name, ptype)
     
-    def act(
-        self,
-        board: List[List],
-    ) -> Tuple[int, int, int, int]:
+    #The act algorithm 
+    def act(self,board: List[List],) -> Tuple[int, int, int, int]:
         """
         Choose a piece and its possible moves randomly.
         Pieces and moves are chosen from all current valid possibilities.
@@ -71,7 +69,8 @@ class myAgent(Agent):
         """
         pass
 
-class MyRandomAgentLight(myAgent):
+
+class MyRandomAgentLight(MyAgent):
     def __init__(
         self,
     ):

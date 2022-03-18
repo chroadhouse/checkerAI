@@ -11,14 +11,12 @@ Created on Thu Mar 17 10:40:44 2022
 # -*- coding: utf-8 -*-
 
 #Thoughts fo the coursework 
-#Will have to create agent in a seperate class - with methods operations
-#I assume you train the agent against itself ? - **Ask Ryan** 
 
 
 import seoulai_gym as gym
 import time
 from seoulai_gym.envs.checkers.agents import RandomAgentLight 
-import MyRandomAgentLight as testingAgent
+from MyAgentFile import *
 from seoulai_gym.envs.checkers.base import Constants
 from seoulai_gym.envs.checkers.agents import RandomAgentDark
 
@@ -26,7 +24,8 @@ env = gym.make("Checkers")
 
 
 agent_one = RandomAgentDark()
-agent_two = testingAgent()
+#agent_two = RandomAgentLight()
+agent_two = MyRandomAgentLight()
 
 observation = env.reset()
 
