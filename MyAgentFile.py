@@ -36,20 +36,22 @@ class MyAgent(Agent):
     #The act algorithm 
     def act(self,board: List[List],) -> Tuple[int, int, int, int]:
         """
-        Choose a piece and its possible moves randomly.
-        Pieces and moves are chosen from all current valid possibilities.
-
-        Args:
-            board: information about positions of pieces.
-
-        Returns:
-            Current and new location of piece.
+        MonteCarlo search method can be called in here 
+        
+        best action method
+        back progagation
+        best child
+        simulate
+        
         """
         rand_from_row, rand_from_col, rand_to_row, rand_to_col = generate_random_move(
             board,
             self.ptype,
             len(board),
         )
+        print("Start Row:{0} Start Col:{1}".format(rand_from_row, rand_from_col))
+        print("End Row:{0} End Col:{1}".format(rand_to_row, rand_to_col))
+        print("----------------------")
         return rand_from_row, rand_from_col, rand_to_row, rand_to_col
 
     def consume(
@@ -70,8 +72,83 @@ class MyAgent(Agent):
         pass
 
 
+class KeyboardAgent(Agent):
+    def __init__(
+        self,
+        ptype: int,        
+    ):
+        if ptype == Constants().DARK:
+            name = "MyAgentDark"
+        elif ptype == Constants().LIGHT:
+            name = "MyAgentLight"
+        else:
+            raise ValueError
+         
+        super().__init__(name, ptype)
+    
+    def act(self,board: List[List],) -> Tuple[int, int, int, int]:
+        """
+        Keyboard input - Take the input X and Y 
+        
+        """
+        start = [int(pos) for pos in input("Enter start posistion (e.g x,y): ").split(",")]
+        end = [int(pos) for pos in input("Enter end posistion (e.g x,y): ").split(",")]
+        print(start)
+        print(end)
+        from_row = start[0]
+        from_col = start[1]
+        to_row = end[0]
+        to_col = end[1]
+        return from_row, from_col, to_row, to_col
+    
+    def consume(
+        self,
+        obs: List[List],
+        reward: float,
+        done: bool,
+    ) -> None:
+        """Agent processes information returned by environment based on agent's latest action.
+        Random agent does not need `reward` or `done` variables, but this method is called anyway
+        when used with other agents.
+
+        Args:
+            board: information about positions of pieces.
+            reward: reward for perfomed step.
+            done: information about end of game.
+        """
+        pass
+
+class MyKeyboardAgentLight(KeyboardAgent):
+    def __init__(
+        self,        
+    ):
+        super().__init__(Constants().LIGHT)
+
+class MyKeyboardAgentDark(KeyboardAgent):
+    def __init__(
+        self,
+    ):
+        super().__init__(Constants().DARK)
+
+
 class MyRandomAgentLight(MyAgent):
     def __init__(
         self,
     ):
         super().__init__(Constants().LIGHT)
+        
+
+class MyRandomAgentDark(MyAgent):
+    def __init__(
+        self,
+    ):
+        super().__init__(Constants().DARK)
+#Pseudo code for the MCST:
+    #4 Steps: Select, Expand, Simulate and backup
+    
+    
+    
+    
+    
+    
+    

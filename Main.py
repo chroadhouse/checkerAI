@@ -11,8 +11,6 @@ Created on Thu Mar 17 10:40:44 2022
 # -*- coding: utf-8 -*-
 
 #Thoughts fo the coursework 
-
-
 import seoulai_gym as gym
 import time
 from seoulai_gym.envs.checkers.agents import RandomAgentLight 
@@ -22,6 +20,8 @@ from seoulai_gym.envs.checkers.agents import RandomAgentDark
 
 env = gym.make("Checkers")
 
+testingAgent = MyKeyboardAgentLight()
+
 
 agent_one = RandomAgentDark()
 #agent_two = RandomAgentLight()
@@ -29,8 +29,9 @@ agent_two = MyRandomAgentLight()
 
 observation = env.reset()
 
+from_row, from_col, to_row, to_col = testingAgent.act(observation)
 
-current_agent = agent_one
+current_agent = testingAgent
 next_agent = agent_two
 
 while True:
@@ -51,4 +52,6 @@ while True:
     next_agent = temp_agent
     
 env.close()
-        
+
+
+#Try using a keyboard agent with a random agent 
