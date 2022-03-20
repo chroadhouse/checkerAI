@@ -91,12 +91,19 @@ class KeyboardAgent(Agent):
         """
         Keyboard input - Take the input X and Y 
         
+        Output the possible move
+        
         """
+        start = []
+        end = []
+        while True:
+            
         #Check whether you have entered two numbers
-        start = [int(pos) for pos in input("Enter start posistion (e.g x,y): ").split(",")]
-        end = [int(pos) for pos in input("Enter end posistion (e.g x,y): ").split(",")]
-        print(start)
-        print(end)
+            start = [int(pos) for pos in input("Enter start posistion (e.g x,y): ").split(",")]
+            end = [int(pos) for pos in input("Enter end posistion (e.g x,y): ").split(",")]
+            if(Rules.validate_move(board, start[0], start[1], end[0], end[1])):
+               break;
+                         
         from_row = start[0]
         from_col = start[1]
         to_row = end[0]
@@ -109,15 +116,6 @@ class KeyboardAgent(Agent):
         reward: float,
         done: bool,
     ) -> None:
-        """Agent processes information returned by environment based on agent's latest action.
-        Random agent does not need `reward` or `done` variables, but this method is called anyway
-        when used with other agents.
-
-        Args:
-            board: information about positions of pieces.
-            reward: reward for perfomed step.
-            done: information about end of game.
-        """
         pass
 
 class MyKeyboardAgentLight(KeyboardAgent):
