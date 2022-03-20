@@ -49,6 +49,7 @@ class MyAgent(Agent):
             self.ptype,
             len(board),
         )
+        
         print("Start Row:{0} Start Col:{1}".format(rand_from_row, rand_from_col))
         print("End Row:{0} End Col:{1}".format(rand_to_row, rand_to_col))
         print("----------------------")
@@ -91,6 +92,7 @@ class KeyboardAgent(Agent):
         Keyboard input - Take the input X and Y 
         
         """
+        #Check whether you have entered two numbers
         start = [int(pos) for pos in input("Enter start posistion (e.g x,y): ").split(",")]
         end = [int(pos) for pos in input("Enter end posistion (e.g x,y): ").split(",")]
         print(start)

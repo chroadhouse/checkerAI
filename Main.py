@@ -23,22 +23,21 @@ env = gym.make("Checkers")
 testingAgent = MyKeyboardAgentLight()
 
 
-agent_one = RandomAgentDark()
+agent_one = MyRandomAgentDark()
 #agent_two = RandomAgentLight()
 agent_two = MyRandomAgentLight()
 
 observation = env.reset()
 
-from_row, from_col, to_row, to_col = testingAgent.act(observation)
-
 current_agent = testingAgent
-next_agent = agent_two
+next_agent = agent_one
 
 while True:
     time.sleep(1)
     env.render()
     from_row, from_col, to_row, to_col = current_agent.act(observation)
     observation, reward, done, info = env.step(current_agent, from_row, from_col, to_row, to_col)
+    print(f"Current agent is - {current_agent}: Info is {info}")
     current_agent.consume(observation, reward, done)
     
     if done:
