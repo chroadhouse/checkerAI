@@ -16,7 +16,9 @@ from typing import Tuple
 from seoulai_gym.envs.checkers.base import Constants
 from seoulai_gym.envs.checkers.rules import Rules
 from seoulai_gym.envs.checkers.utils import generate_random_move
+from seoulai_gym.envs.checkers.utils import board_list2numpy
 from seoulai_gym.envs.checkers.agents import Agent
+
 
 class MyAgent(Agent):
     def __init__(
@@ -41,19 +43,20 @@ class MyAgent(Agent):
         best action method
         back progagation
         best child
-        simulate
+        simulate(rollout)
         
         """
-        rand_from_row, rand_from_col, rand_to_row, rand_to_col = generate_random_move(
+        from_row, from_col, to_row, to_col = generate_random_move(
             board,
             self.ptype,
             len(board),
         )
         
-        print("Start Row:{0} Start Col:{1}".format(rand_from_row, rand_from_col))
-        print("End Row:{0} End Col:{1}".format(rand_to_row, rand_to_col))
+        print("Start Row:{0} Start Col:{1}".format(from_row, from_col))
+        print("End Row:{0} End Col:{1}".format(to_row, to_col))
         print("----------------------")
-        return rand_from_row, rand_from_col, rand_to_row, rand_to_col
+        print(board_list2numpy(board))
+        return from_row, from_col, to_row, to_col
 
     def consume(
         self,
@@ -97,13 +100,12 @@ class KeyboardAgent(Agent):
         start = []
         end = []
         while True:
-            
-        #Check whether you have entered two numbers
+            #Makes sure the move you enter is a valid move 
             start = [int(pos) for pos in input("Enter start posistion (e.g x,y): ").split(",")]
             end = [int(pos) for pos in input("Enter end posistion (e.g x,y): ").split(",")]
             if(Rules.validate_move(board, start[0], start[1], end[0], end[1])):
                break;
-                         
+            print("Enter a valid move")
         from_row = start[0]
         from_col = start[1]
         to_row = end[0]
