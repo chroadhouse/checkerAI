@@ -19,7 +19,10 @@ from seoulai_gym.envs.checkers.base import Constants
 from seoulai_gym.envs.checkers.agents import RandomAgentDark
 from seoulai_gym.envs.checkers.utils import board_list2numpy
 
+
 env = gym.make("Checkers")
+#Note that I don't need to remap the rewards here , i can do it in the other section
+#Don't have to do this here i don't think but I will anyway 
 #Lets you decided what you want to do. 
 gameChoice =0
 while True:
@@ -30,34 +33,38 @@ while True:
 if(int(gameChoice)==1):
     agent_two = MyKeyboardAgentLight()
 elif(int(gameChoice)==2):
-    agent_two = MyRandomAgentLight()
+    agent_two = MCTSAgentLight()
 
 
 agent_one = MyRandomAgentDark()
 observation = env.reset()
-
+print(env.board)
 current_agent = agent_two
 next_agent = agent_one
-
+episode_count = 0
 
 while True:
-    time.sleep(1)
+    if episode_count == 1:
+        break
+    
     env.render()
     #Agent gets the action from the current enviroment
-    from_row, from_col, to_row, to_col = current_agent.act(observation)
+    from_row, from_col, to_row, to_col = current_agent.act(observation,env.board)
     #
     observation, reward, done, info = env.step(current_agent, from_row, from_col, to_row, to_col)
-    print(f"Current agent is - {current_agent}: Info is {info}")
-    print(f"Reward for this move is {reward}")
-    current_agent.consume(observation, reward, done)
+    #print(f"Current agent is - {current_agent}: Info is {info}")
+    #print(f"Reward for this move is {reward}")
+    #current_agent.consume(observation, reward, done)
     
-    print(board_list2numpy(observation))
+    #print(board_list2numpy(observation))
     
     if done:
         print(f"Game over! {current_agent} agent wins.")
         observation = env.reset()
         #Can track the number of games here
-        break;
+        episode_count += 1
+        print(f"Episode - {episode_count}")
+        
     
     #Change around to whcih one is currently moving
     temp_agent = current_agent

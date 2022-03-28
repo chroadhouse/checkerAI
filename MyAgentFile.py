@@ -18,44 +18,41 @@ from seoulai_gym.envs.checkers.rules import Rules
 from seoulai_gym.envs.checkers.utils import generate_random_move
 from seoulai_gym.envs.checkers.utils import board_list2numpy
 from seoulai_gym.envs.checkers.agents import Agent
+from MonteCarloSearchTreeFile import MCTS
+from seoulai_gym.envs.checkers.board import Board
 
 
-class MyAgent(Agent):
+class MyRandomAgent(Agent):
     def __init__(
             self,
             ptype: int,
     ):
         
         if ptype == Constants().DARK:
-            name = "MyAgentDark"
+            name = "MyRandomAgentDark"
         elif ptype == Constants().LIGHT:
-            name = "MyAgentLight"
+            name = "MyRandomAgentLight"
         else:
             raise ValueError
     
         super().__init__(name, ptype)
     
     #The act algorithm 
-    def act(self,board: List[List],) -> Tuple[int, int, int, int]:
+    #Can probably get rid of the board variable and just have the board class being passed
+    def act(self,board: List[List], gameBoard: Board) -> Tuple[int, int, int, int]:
         """
-        MonteCarlo search method can be called in here 
-        
-        best action method
-        back progagation
-        best child
-        simulate(rollout)
-        
+            input: state of the board
         """
         from_row, from_col, to_row, to_col = generate_random_move(
-            board,
+            gameBoard.board_list,
             self.ptype,
-            len(board),
+            len(gameBoard.board_list),
         )
-        
-        print("Start Row:{0} Start Col:{1}".format(from_row, from_col))
-        print("End Row:{0} End Col:{1}".format(to_row, to_col))
-        print("----------------------")
-        print(board_list2numpy(board))
+        #test.bestAction(10)
+        #print("Type is {0}".format(self.ptype))
+        temp = Rules.generate_valid_moves(board, self.ptype,8)
+        testing = MCTS(board, self.ptype, gameBoard)
+        testing.bestAction(10)
         return from_row, from_col, to_row, to_col
 
     def consume(
@@ -75,7 +72,74 @@ class MyAgent(Agent):
         """
         pass
 
+class MCTSAgent(Agent):
+    def __init__(
+            self,
+            ptype: int,
+    ):
+        
+        if ptype == Constants().DARK:
+            name = "MCTSAgentDark"
+        elif ptype == Constants().LIGHT:
+            name = "MCTSAgentLight"
+        else:
+            raise ValueError
+    
+        super().__init__(name, ptype)
+    
+    #The act algorithm 
+    #Can probably get rid of the board variable and just have the board class being passed
+    def act(self,board: List[List], gameBoard: Board) -> Tuple[int, int, int, int]:
+        """
+            input: state of the board
+        """
+        from_row, from_col, to_row, to_col = generate_random_move(
+            gameBoard.board_list,
+            self.ptype,
+            len(gameBoard.board_list),
+        )
+        #test.bestAction(10)
+        #print("Type is {0}".format(self.ptype))
+        temp = Rules.generate_valid_moves(board, self.ptype,8)
+        testing = MCTS(board, self.ptype, gameBoard)
+        node = testing.bestAction(10)
+        print(node.actionPlayed)
+        if node.actionPlayed != None:
+            return node.actionPlayed[0][0], node.actionPlayed[0][1], node.actionPlayed[1][0], node.actionPlayed[1][1]
+        return from_row, from_col, to_row, to_col
 
+    def consume(
+        self,
+        obs: List[List],
+        reward: float,
+        done: bool,
+    ) -> None:
+        """Agent processes information returned by environment based on agent's latest action.
+        Random agent does not need `reward` or `done` variables, but this method is called anyway
+        when used with other agents.
+
+        Args:
+            board: information about positions of pieces.
+            reward: reward for perfomed step.
+            done: information about end of game.
+        """
+        pass
+
+class MCTSAgentDark(MCTSAgent):
+    def __init__(
+            self,
+    ):
+        super().__init__(Constants().DARK)
+
+
+class MCTSAgentLight(MCTSAgent):
+    def __init__(
+            self,
+    ):
+        super().__init__(Constants().LIGHT)
+                    
+    
+    
 class KeyboardAgent(Agent):
     def __init__(
         self,
@@ -90,13 +154,16 @@ class KeyboardAgent(Agent):
          
         super().__init__(name, ptype)
     
-    def act(self,board: List[List],) -> Tuple[int, int, int, int]:
+    def act(self,board: List[List], gameBoard: Board) -> Tuple[int, int, int, int]:
         """
         Keyboard input - Take the input X and Y 
         
         Output the possible move
         
         """
+        if gameBoard.board_list == board:
+            print("Looking good")
+        print(board_list2numpy(gameBoard.board_list))
         start = []
         end = []
         while True:
@@ -133,24 +200,15 @@ class MyKeyboardAgentDark(KeyboardAgent):
         super().__init__(Constants().DARK)
 
 
-class MyRandomAgentLight(MyAgent):
+class MyRandomAgentLight(MyRandomAgent):
     def __init__(
         self,
     ):
         super().__init__(Constants().LIGHT)
         
 
-class MyRandomAgentDark(MyAgent):
+class MyRandomAgentDark(MyRandomAgent):
     def __init__(
         self,
     ):
         super().__init__(Constants().DARK)
-#Pseudo code for the MCST:
-    #4 Steps: Select, Expand, Simulate and backup
-    
-    
-    
-    
-    
-    
-    
