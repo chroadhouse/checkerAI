@@ -50,9 +50,6 @@ class MyRandomAgent(Agent):
         )
         #test.bestAction(10)
         #print("Type is {0}".format(self.ptype))
-        temp = Rules.generate_valid_moves(board, self.ptype,8)
-        testing = MCTS(board, self.ptype, gameBoard)
-        testing.bestAction(10)
         return from_row, from_col, to_row, to_col
 
     def consume(
@@ -102,9 +99,10 @@ class MCTSAgent(Agent):
         #print("Type is {0}".format(self.ptype))
         temp = Rules.generate_valid_moves(board, self.ptype,8)
         testing = MCTS(board, self.ptype, gameBoard)
-        node = testing.bestAction(10)
-        print(node.actionPlayed)
-        if node.actionPlayed != None:
+        node = testing.bestAction(200)
+        print(node)
+        
+        if node != None:
             return node.actionPlayed[0][0], node.actionPlayed[0][1], node.actionPlayed[1][0], node.actionPlayed[1][1]
         return from_row, from_col, to_row, to_col
 
