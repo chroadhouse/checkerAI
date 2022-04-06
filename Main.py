@@ -18,6 +18,7 @@ from MyAgentFile import *
 from seoulai_gym.envs.checkers.base import Constants
 from seoulai_gym.envs.checkers.agents import RandomAgentDark
 from seoulai_gym.envs.checkers.utils import board_list2numpy
+import DataLogger
 
 
 env = gym.make("Checkers")
@@ -31,6 +32,7 @@ reward_map= {
     "opponent_no_valid_move":1.0
 }
 env.update_rewards(reward_map)
+
 #Note that I don't need to remap the rewards here , i can do it in the other section
 #Don't have to do this here i don't think but I will anyway 
 #Lets you decided what you want to do. 
@@ -54,35 +56,57 @@ observation = env.reset()
 current_agent = agent_two
 next_agent = agent_one
 episode_count = 0
+tally = 0
+winCount = []
+episodeInfo = []
+
+#Test the functionality of the 
 
 while True:
-    if episode_count == 5:
+    if episode_count == 1 or tally >200:
         break
     env.render()
     #Agent gets the action from the current enviroment
     from_row, from_col, to_row, to_col = current_agent.act(observation,env.board)
     #
     observation, reward, done, info = env.step(current_agent, from_row, from_col, to_row, to_col)
-    print(f"Current agent is - {current_agent}: Info is {info}")
+    #print(f"Current agent is - {current_agent}: Info is {info}")
     #print(f"Reward for this move is {reward}")
     #current_agent.consume(observation, reward, done)
-    
+    episodeInfo.append(f" {current_agent}: {info}")
     #print(board_list2numpy(observation))
     
     if done:
         print(f"Game over! {current_agent} agent wins.")
+        winCount.append(f"{current_agent} agent wins")
         observation = env.reset()
+        tally = 0
         #Can track the number of games here
         episode_count += 1
-        print(f"Episode - {episode_count}")
+        #print(f"Episode - {episode_count}")
         
     
+    tally = tally +1
+    #print(f'Tally - {tally}')
+   
     #Change around to whcih one is currently moving
     temp_agent = current_agent
     current_agent = next_agent
     next_agent = temp_agent
     
+
+
+for i in episodeInfo:
+    print(i)
 env.close()
 
+for i in winCount:
+    print(i)
 
 #Try using a keyboard agent with a random agent 
+
+
+# =============================================================================
+# My thoughts are that what i did stopped - tomorrow look at performance and 
+# Also look at 
+# =============================================================================
