@@ -8,8 +8,8 @@ Created on Tue Mar 29 08:58:34 2022
 
 #Data logger needs to store the moves of the last game with the state
 #Just needs 
-
-
+#Coding thought - write to a csv and then run over a number of simulations
+#NEED TO DO THIS 
 
 class DataLogger:
     

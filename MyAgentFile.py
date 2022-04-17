@@ -39,7 +39,7 @@ class MyRandomAgent(Agent):
     
     #The act algorithm 
     #Can probably get rid of the board variable and just have the board class being passed
-    def act(self,board: List[List], gameBoard: Board) -> Tuple[int, int, int, int]:
+    def act(self,board: List[List], n ,move, gameBoard: Board) -> Tuple[int, int, int, int]:
         """
             input: state of the board
         """
@@ -86,7 +86,7 @@ class MCTSAgent(Agent):
     
     #The act algorithm 
     #Can probably get rid of the board variable and just have the board class being passed
-    def act(self,board: List[List], gameBoard: Board) -> Tuple[int, int, int, int]:
+    def act(self,board: List[List],  n,move, gameBoard: Board) -> Tuple[int, int, int, int]:
         """
             input: state of the board
         """
@@ -95,17 +95,14 @@ class MCTSAgent(Agent):
             self.ptype,
             len(gameBoard.board_list),
         )
-        #test.bestAction(10)
-        #print("Type is {0}".format(self.ptype))
-        temp = Rules.generate_valid_moves(board, self.ptype,8)
-        testing = MCTS(gameBoard, self.ptype)
-        node = testing.bestAction(2000)
-        
-        
-        if node != None:
-            return node.actionPlayed[0][0], node.actionPlayed[0][1], node.actionPlayed[1][0], node.actionPlayed[1][1]
-        else:
-            print('No')
+        if(move >170):
+            testing = MCTS(gameBoard, self.ptype)
+            node = testing.bestAction(n)
+            
+            
+            if node != None:
+                print(node.actionPlayed)
+                return node.actionPlayed[0][0], node.actionPlayed[0][1], node.actionPlayed[1][0], node.actionPlayed[1][1]
         return from_row, from_col, to_row, to_col
 
     def consume(
@@ -117,6 +114,8 @@ class MCTSAgent(Agent):
         """Agent processes information returned by environment based on agent's latest action.
         Random agent does not need `reward` or `done` variables, but this method is called anyway
         when used with other agents.
+        
+        Have a cancel on the after so many steps to stop it from runnnig forever 
 
         Args:
             board: information about positions of pieces.
@@ -154,29 +153,33 @@ class KeyboardAgent(Agent):
          
         super().__init__(name, ptype)
     
-    def act(self,board: List[List], gameBoard: Board) -> Tuple[int, int, int, int]:
+    def act(self,board: List[List],n,move, gameBoard: Board) -> Tuple[int, int, int, int]:
         """
         Keyboard input - Take the input X and Y 
         
         Output the possible move
         
         """
-        if gameBoard.board_list == board:
-            print("Looking good")
-        print(board_list2numpy(gameBoard.board_list))
-        start = []
-        end = []
-        while True:
-            #Makes sure the move you enter is a valid move 
-            start = [int(pos) for pos in input("Enter start posistion (e.g x,y): ").split(",")]
-            end = [int(pos) for pos in input("Enter end posistion (e.g x,y): ").split(",")]
-            if(Rules.validate_move(board, start[0], start[1], end[0], end[1])):
-               break;
+        from_row, from_col, to_row, to_col = generate_random_move(
+            gameBoard.board_list,
+            self.ptype,
+            len(gameBoard.board_list),
+        )
+        if(move > 170):
+            print(board_list2numpy(gameBoard.board_list))
+            start = []
+            end = []
+            while True:
+                #Makes sure the move you enter is a valid move 
+                start = [int(pos) for pos in input("Enter start posistion (e.g x,y): ").split(",")]
+                end = [int(pos) for pos in input("Enter end posistion (e.g x,y): ").split(",")]
+                if(Rules.validate_move(board, start[0], start[1], end[0], end[1])):
+                   break;
             print("Enter a valid move")
-        from_row = start[0]
-        from_col = start[1]
-        to_row = end[0]
-        to_col = end[1]
+            from_row = start[0]
+            from_col = start[1]
+            to_row = end[0]
+            to_col = end[1]
         return from_row, from_col, to_row, to_col
     
     def consume(
