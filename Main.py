@@ -12,7 +12,7 @@ Created on Thu Mar 17 10:40:44 2022
 
 #Thoughts fo the coursework 
 import seoulai_gym as gym
-import time
+import datetime
 from seoulai_gym.envs.checkers.agents import RandomAgentLight 
 from MyAgentFile import *
 from seoulai_gym.envs.checkers.base import Constants
@@ -38,8 +38,8 @@ env.update_rewards(reward_map)
 #Lets you decided what you want to do. 
 gameChoice =0
 while True:
-    gameChoice = input("1 to play: \n2 to watch Random: \n3 to to watch 2 MST: \n4 to watch 2 Random:")
-    if(int(gameChoice)==1 or int(gameChoice)==2 or int(gameChoice)==3 or int(gameChoice)==4):
+    gameChoice = input("1 to play: \n2 to watch Random: \n3 to to watch 2 MST: ")
+    if(int(gameChoice)==1 or int(gameChoice)==2 or int(gameChoice)==3): # or int(gameChoice)==4):
         break
     
 if(int(gameChoice)==1):
@@ -49,50 +49,64 @@ elif(int(gameChoice)==2):
 elif(int(gameChoice)==3):
     agent_two = MCTSAgentLight()
 
-agent_one = MCTSAgentDark()
-if(int(gameChoice)==4):
-    agent_one = MyRandomAgentDark()
-    agent_two = MyRandomAgentLight()  
+agent_one = MCTSAgentDark() 
 #Going to make this all run and look ab
 
 #agent_one = MyRandomAgentDark()
-observation = env.reset()
+env.reset()
 current_agent = agent_two
 next_agent = agent_one
-
+#get rid of the random option as it is not needed
 endCount =0
 n =0
 increment =0
+
 while True:
     #Number of games 
     #Number of cycles for the agent 
     #How much you want to increment the simulationm number
     tempEndCount = input("Please input a of games you want it to play")
-    if(int(gameChoice) != 4):
-        tempN = input('Please input a number of cycles you want ')
-        tempIncrement = input("Please input a number you want to increment the cycles by")
-        if(tempN.strip().isdigit() and tempIncrement.strip().isdigit() and tempEndCount.strip().isdigit()):
-            if(int(tempN) > 0 and int(tempIncrement) >= 0 and int(tempEndCount) >0):
-                endCount = int(tempEndCount)
-                n = int(tempN)
-                increment = int(tempIncrement)
-                break
-            else:
-                print("The digit must be greater than 0")
-            
-        else:
-            print("Please input a digit")
-    else:
-        if(tempEndCount.strip().isdigit()):
-            if(int(tempEndCount) > 0):
-                endCount = int(tempEndCount)
-                break
-            else:
-                print('Number must be greater than 0')
-        else:
-            print('Number must be a digit')
-        
     
+    tempN = input('Please input a number of cycles you want ')
+    tempIncrement = input("Please input a number you want to increment the cycles by")
+    if(tempN.strip().isdigit() and tempIncrement.strip().isdigit() and tempEndCount.strip().isdigit()):
+        if(int(tempN) > 0 and int(tempIncrement) >= 0 and int(tempEndCount) >0):
+            endCount = int(tempEndCount)
+            n = int(tempN)
+            increment = int(tempIncrement)
+            break
+        else:
+            print("The digit must be greater than 0")
+    else:
+        print("Please input a digit")
+        
+playFromRandom =0
+while True:
+    fromRandomString = input('Would you like to have the agent play random to begin: y/n')
+    if fromRandomString == 'y':
+        fromRandomString = input('What number of moves would you like random between 0 and 170: ')
+        if(fromRandomString.strip().isdigit()):
+            if(int(fromRandomString) >= 0 and int(fromRandomString) <= 170):
+                playFromRandom = int(fromRandomString)
+                break
+    elif fromRandomString == 'n':
+        playFromRandom = 0
+        break
+    else:
+        print('Please input y/n only')
+# =============================================================================
+#     else:
+#         if(tempEndCount.strip().isdigit()):
+#             if(int(tempEndCount) > 0):
+#                 endCount = int(tempEndCount)
+#                 break
+#             else:
+#                 print('Number must be greater than 0')
+#         else:
+#             print('Number must be a digit')
+# =============================================================================
+        
+
     
 #Parameters for running 
 episode_count = 0
@@ -104,16 +118,16 @@ simNumberList =[]
 
 
 #Test the functionality of the 
-
+startTime = datetime.datetime.now()
 while True:
     if episode_count == endCount:# or tally >250:
         break
-    env.render()
+    #env.render()
     print(f'Currently in game {episode_count+1} on move {tally}')
     #Agent gets the action from the current enviroment
-    from_row, from_col, to_row, to_col = current_agent.act(observation,n,tally,env.board)
+    from_row, from_col, to_row, to_col = current_agent.act(env.board,n,tally,playFromRandom)
     #
-    observation, reward, done, info = env.step(current_agent, from_row, from_col, to_row, to_col)
+    _, _, done, info = env.step(current_agent, from_row, from_col, to_row, to_col)
     print(f"Current agent - {current_agent}: {info}")
     #print(f"Reward for this move is {reward}")
     #current_agent.consume(observat6,ion, reward, done)
@@ -123,7 +137,7 @@ while True:
     if done:
         print(f"Game over! {current_agent} agent wins.")
         winCount.append(f"{current_agent} agent wins")
-        observation = env.reset()
+        env.reset()
         tallyList.append(tally)
         tally = 0
         simNumberList.append(n)
@@ -145,7 +159,11 @@ for i in range(0,len(winCount)):
     print(f"Sim No.{simNumberList[i]} {winCount[i]} with N steps {tallyList[i]}")
 
 
-
+endTime = datetime.datetime.now()
+time_delta = (endTime - startTime)
+total_seconds = time_delta.total_seconds()
+minutes = total_seconds/60
+print(f"This took {minutes} minutes to complete the game")
 #Try using a keyboard agent with a random agent 
 
 

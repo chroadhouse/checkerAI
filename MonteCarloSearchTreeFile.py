@@ -26,15 +26,19 @@ class MCTS:
     def __init__(self, state, playerType):
         self.root = Node(state, playerType) 
         
-    def bestAction(self, simNumber):
+    def bestAction(self, simNumber, consequence, rolloutStop):
         #print(f'The input player type - {self.root.ptype}')
         #print(f'The opposite player type - {Rules.get_opponent_type(self.root.ptype)}')
         for i in range(0,simNumber):
-            print(i)
+            #print(i)
             node = self.treePolicy()
             #print(f'Current node type is - {node.ptype}')
-            reward = node.rollout(node.state)
+            reward = node.rollout(node.state, consequence, rolloutStop)
             node.backpropagate(reward)
+        if consequence:
+            print(f'With consequence: {rolloutStop}')
+        else:
+            print(f'without consequence: {rolloutStop}')
         return self.root.bestChildFinal()
         #return self.root.bestChild(c_param=0.)
         #Look for the number of sim numbers
@@ -176,7 +180,7 @@ class Node():
         return moveList
     
     #Incentivise winning more
-    def rollout(self, tempState):
+    def rollout(self, tempState, consequence, rolloutStop):
         """
             Simulates the game and returns the player time that won from the simulation
         """
@@ -202,11 +206,11 @@ class Node():
             if len(potencialMoves)==0 or len(rolloutState.get_positions(rolloutState.board_list, currentPlayerType, 8))==0:
                 #Currentplayer has lost then swap the player
                 currentPlayerType = Rules.get_opponent_type(currentPlayerType)
-                print(f"{currentPlayerType} - wins")
+                #print(f"{currentPlayerType} - wins")
                 break
             if len(Rules.generate_valid_moves(rolloutState.board_list, Rules.get_opponent_type(currentPlayerType) ,8))==0 or len(rolloutState.get_positions(rolloutState.board_list, Rules.get_opponent_type(currentPlayerType), 8)) ==0:
                 #Current player wins
-                print(f"{currentPlayerType} - wins")
+                #print(f"{currentPlayerType} - wins")
                 break
             #print("Before Action")
             #print(f"{board_list2numpy(rolloutState.board_list)}")
@@ -218,13 +222,13 @@ class Node():
             
             #print(f'Player - {currentPlayerType}: {info}')
             if done:
-                print('Rollout ending in normal way')
+                #print('Rollout ending in normal way')
                 break
             #print(f"after {board_list2numpy(rolloutState.board_list)}")
             
             currentPlayerType = Rules.get_opponent_type(currentPlayerType)
             count += 1
-            if count > 50:
+            if count > rolloutStop:
                 #print('Count is over 300')
                 #if(count > 600):
                 break
@@ -270,8 +274,9 @@ class Node():
 #             return 1, rewardWeight
 # =============================================================================
         #print(f"The end of the rollout state{board_list2numpy(rolloutState.board_list)}")
-        if count > 50:
-            currentPlayerType = Rules.get_opponent_type(self.ptype)
+        if consequence:
+            if count > 50:
+                currentPlayerType = Rules.get_opponent_type(self.ptype)
         return currentPlayerType
         #return reward, 0#rewardWeight
         #create a current rollout state
