@@ -26,19 +26,16 @@ class MCTS:
     def __init__(self, state, playerType):
         self.root = Node(state, playerType) 
         
-    def bestAction(self, simNumber, consequence, rolloutStop):
+    def bestAction(self, simNumber):
         #print(f'The input player type - {self.root.ptype}')
         #print(f'The opposite player type - {Rules.get_opponent_type(self.root.ptype)}')
         for i in range(0,simNumber):
             #print(i)
             node = self.treePolicy()
             #print(f'Current node type is - {node.ptype}')
-            reward = node.rollout(node.state, consequence, rolloutStop)
+            reward = node.rollout(node.state)
             node.backpropagate(reward)
-        if consequence:
-            print(f'With consequence: {rolloutStop}')
-        else:
-            print(f'without consequence: {rolloutStop}')
+    
         return self.root.bestChildFinal()
         #return self.root.bestChild(c_param=0.)
         #Look for the number of sim numbers
@@ -180,7 +177,7 @@ class Node():
         return moveList
     
     #Incentivise winning more
-    def rollout(self, tempState, consequence, rolloutStop):
+    def rollout(self, tempState):
         """
             Simulates the game and returns the player time that won from the simulation
         """
@@ -228,7 +225,7 @@ class Node():
             
             currentPlayerType = Rules.get_opponent_type(currentPlayerType)
             count += 1
-            if count > rolloutStop:
+            if count > 50:
                 #print('Count is over 300')
                 #if(count > 600):
                 break
@@ -274,9 +271,9 @@ class Node():
 #             return 1, rewardWeight
 # =============================================================================
         #print(f"The end of the rollout state{board_list2numpy(rolloutState.board_list)}")
-        if consequence:
-            if count > 50:
-                currentPlayerType = Rules.get_opponent_type(self.ptype)
+        
+        if count > 50:
+            currentPlayerType = Rules.get_opponent_type(self.ptype)
         return currentPlayerType
         #return reward, 0#rewardWeight
         #create a current rollout state
@@ -342,61 +339,5 @@ class Node():
     def oldRolloutPolicy(self, potencialMoves):
         return potencialMoves[np.random.randint(len(potencialMoves))]
     
-# =============================================================================
-#     def rolloutPolicy(self, potencialMoves, rolloutState, currentPlayerType):
-#         #print(len(potencialMoves))
-#         rewardList = []
-#         for move in potencialMoves:
-#             tempState = copy.deepcopy(rolloutState)
-#             action = move
-#             test, reward, done, info = tempState.move(currentPlayerType, action[0][0],action[0][1],action[1][0],action[1][1])
-#             rewardList.append(reward)
-#         index = np.argmax(rewardList)
-#         #print(f"index is  {index}")
-#         #print(f" Number of potencial moves{len(potencialMoves)}")
-#         #return potencialMoves[np.random.randint(len(potencialMoves))]
-#         return potencialMoves[index]
-#     
-# 
-#     def newRolloutPolicy(self, potencialMoves, rolloutState, currentPlayerType):
-#         if currentPlayerType == 2: #Current player is dark 
-#             #Row needs to be the row that will be there at the end 
-#             endRow = 7 
-#             endColList = [0,2,4,6]
-#             #[0][0] From row 
-#             #[0][1] From col 
-#             #[1][0] To Row
-#             #[1][1] To col 
-#             for move in potencialMoves:
-#                 reward = self.rewardFromMove(move, endRow, endColList, rolloutState, True)
-#         else:
-#             endRow = 0
-#             endColList = [1,3,5,7]
-#             for move in potencialMoves:
-#                 startPoint = move[0]
-#                 endPoint = move[1]
-#                 print(f"Start point is {startPoint}")
-#                 print(f"End Point is {endPoint}")
-#                 
-#         
-# #Thought process of why this isn't currently working:
-#     #So the child needs to be changed so that both states move? 
-#     #
-#     
-#     def rewardFromMove(move, endRow, endColList, rolloutState, darkPiece):
-#         darkPiece = 10
-#         darkKing = 11
-#         lightPiece = 20 
-#         lightKing = 21
-#         
-#         startPoint = move[0]
-#         endPoint = move[1]
-#         #Look like i need to look at the idea of why the Q value is not doing what it should before i move onto to look at other things 
-#         #Doe this i should probably think about what can be done 
-#         #Check if it's a king
-#         
-#         return 0
-#         
-# =============================================================================
-        
+
         

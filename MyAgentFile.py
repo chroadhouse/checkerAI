@@ -86,7 +86,7 @@ class MCTSAgent(Agent):
     
     #The act algorithm 
     #Can probably get rid of the board variable and just have the board class being passed
-    def act(self,gameBoard: Board,  n,move,playfromRandom) -> Tuple[int, int, int, int]:
+    def act(self,gameBoard,  n,move,playfromRandom) -> Tuple[int, int, int, int]:
         """
             input: state of the board
         """
@@ -96,22 +96,8 @@ class MCTSAgent(Agent):
             len(gameBoard.board_list),
         )
         if(move >playfromRandom):
-            testing50 = MCTS(gameBoard, self.ptype)
-            testingConsequence50 = MCTS(gameBoard, self.ptype)
-            testing300 = MCTS(gameBoard, self.ptype)
-            testingConsequence300 = MCTS(gameBoard, self.ptype)
-            #Pass in number of rollout stop number 0
-            #No conseqeunce 50
-            node = testing50.bestAction(n,False,50)
-           # print(f'Action Chosen: {nodeTemp.actionPlayed}')
-            #node = testingConsequence50.bestAction(n,True,50)
-            #print(f"Action Chosen: {node.actionPlayed}")
-           # node = testing300.bestAction(n, False, 300)
-           # print(f"Action Chosen: {node300.actionPlayed}")
-            #consequence 500
-            #nodeConsequence300 = testingConsequence300.bestAction(n,True,300)
-            #print(f'Action Chosen: {nodeConsequence300.actionPlayed}')
-            
+            testing = MCTS(gameBoard, self.ptype)        
+            node = testing.bestAction(n)
             if node != None:
                 print(node.actionPlayed)
                 return node.actionPlayed[0][0], node.actionPlayed[0][1], node.actionPlayed[1][0], node.actionPlayed[1][1]
@@ -165,7 +151,7 @@ class KeyboardAgent(Agent):
          
         super().__init__(name, ptype)
     
-    def act(self,board: List[List],n,move,playFromRandom, gameBoard: Board) -> Tuple[int, int, int, int]:
+    def act(self,gameBoard,n,move,playFromRandom) -> Tuple[int, int, int, int]:
         """
         Keyboard input - Take the input X and Y 
         
@@ -185,7 +171,7 @@ class KeyboardAgent(Agent):
                 #Makes sure the move you enter is a valid move 
                 start = [int(pos) for pos in input("Enter start posistion (e.g x,y): ").split(",")]
                 end = [int(pos) for pos in input("Enter end posistion (e.g x,y): ").split(",")]
-                if(Rules.validate_move(board, start[0], start[1], end[0], end[1])):
+                if(Rules.validate_move(gameBoard.board_list, start[0], start[1], end[0], end[1])):
                    break;
             print("Enter a valid move")
             from_row = start[0]
