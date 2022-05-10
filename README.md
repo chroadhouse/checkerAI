@@ -3,20 +3,20 @@ This is the code for the MCTS learning agent written in python using Seoul AI gy
 
 You cann find a copy of the code at: https://github.com/chroadhouse/checkerAIDiss/edit/main/README.md
 
-To do this you must install the seoul ai gym libarary from github:
-
+To do this you must install the seoul ai gym libarary from github: https://github.com/seoulai/gym
 
 Or install via pip
-
-// Write the code here 
-
+```
+pip3 install seoulai-gym
+```
 
 Once install simply 
-'''
+
+```
 cd chechkerAIDiss
 
-python3 Main.oy
-'''
+python3 Main.py
+```
 
 To play the game you have 3 options 
 1: To play against the agent yourself 
