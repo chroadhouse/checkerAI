@@ -65,6 +65,10 @@ class Node():
     
         
     def expand(self):
+        """State is copied and action picked from list, this is then perfomed and the new state is 
+        created in the 
+        
+        """
         newState = copy.deepcopy(self.state)
         action = self.untriedActions.pop()
         newState.move(self.ptype,action[0][0],action[0][1],action[1][0],action[1][1])
