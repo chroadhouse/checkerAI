@@ -1,6 +1,8 @@
 # checkerAIDiss
 This is the code for the MCTS learning agent written in python using Seoul AI gym
 
+You cann find a copy of the code at: https://github.com/chroadhouse/checkerAIDiss/edit/main/README.md
+
 To do this you must install the seoul ai gym libarary from github:
 
 
@@ -28,7 +30,9 @@ Once in you will be asked:
 - Whether you want to play some of the game at random (up to 170 moves)
 
 
-When playing the game against the opponent use the numbered board below: 
+When playing the game against the opponent use the numbered board (board map.png file)below: 
+
+![use the board map file](https://github.com/chroadhouse/checkerAIDiss/blob/main/board%20map.png)
 
 which is also included in the in the file to make a move.
 
