@@ -66,8 +66,7 @@ class Node():
         
     def expand(self):
         """State is copied and action picked from list, this is then perfomed and the new state is 
-        created in the 
-        
+        created, this is then added to the child list and returned 
         """
         newState = copy.deepcopy(self.state)
         action = self.untriedActions.pop()
@@ -79,17 +78,30 @@ class Node():
 
 
     def terminalNode(self):
+        """Checks if the node is termnial by looking to see if there are any pieces on the board
+        and whether to see if the pieces on the board can move
+        """
         if len(self.state.get_positions(self.state.board_list, self.ptype, 8)) == 0 or len(self.state.get_positions(self.state.board_list, Rules.get_opponent_type(self.ptype), 8)) == 0 or len(Rules.generate_valid_moves(self.state.board_list, self.ptype, 8)) ==0 or len(Rules.generate_valid_moves(self.state.board_list,  Rules.get_opponent_type(self.ptype), 8)) ==0:
             return True
         else:
             return False
         
     def getMoves(self, state, playerType):
+        """Moves are extracted from the 3rd party libraray and uses list comprehension to 
+        extract the data and returns this in a lists
+        
+        Args:
+            state: Board class that represents the game board state
+            playerType: an integer value that represents the playertype 
+        """
         actions = Rules.generate_valid_moves(state, playerType, 8)
         moveList = [[key,value] for key in actions for value in actions[key]]
         return moveList
 
     def simulation(self):
+        """Rollout state is used to play a game which will run for 50 moves or will stop before that 
+        if someone wins the game. The output is the player type that wins
+        """
         rolloutState = copy.deepcopy(self.state)
         count =0
         currentPlayerType = self.ptype
@@ -97,6 +109,7 @@ class Node():
         while True:
             potencialMoves = self.getMoves(rolloutState.board_list, currentPlayerType)
             
+            #
             if len(potencialMoves)==0 or len(rolloutState.get_positions(rolloutState.board_list, currentPlayerType, 8))==0:
                 currentPlayerType = Rules.get_opponent_type(currentPlayerType)
                 break
@@ -118,10 +131,24 @@ class Node():
             currentPlayerType = Rules.get_opponent_type(self.ptype)
         return currentPlayerType
 
-    
+    def rolloutPolicy(self, potencialMoves):
+        """Randomly chooses a move out of the options
+        
+        Args:
+            potencialMoves: a list of moves that have being generated
+        """
+        n_moves = len(potencialMoves)
+        return potencialMoves[np.random.randint(n_moves)]
+        
         
     
     def backpropagate(self, simulationResult):
+        """Backpropagates up the tree incrementing the number of visits and 
+        the wins for that player
+        
+        Args:
+            simulationResult: the player type that won the simulation
+        """
         self.numberVisits += 1
         self.results[simulationResult] +=1
         if self.parent:
@@ -129,11 +156,20 @@ class Node():
 
     
     def isFullyExpanded(self):
+        """Retuns a boolean value dependant on whether the node has more
+        actions that can be created into nodes
+        """
         return len(self.untriedActions)==0
         
     
-    def UCT(self, c_param=1.6):
-        uctScore = [ (c.q() / (c.n())) + c_param * np.sqrt((2 * np.log(self.n()) / (c.n()))) for c in self.children]
+    def UCT(self, c=1.6):
+        """Weights for the different children of the node are calcualted using 
+        the UCT algorithm. The max of this is then used to return the child with the best score
+        
+        Args:
+            c: constant value that can be changed but has a default of 1.6
+        """
+        uctScore = [ (child.q() / (child.n())) + c * np.sqrt((2 * np.log(self.n()) / (child.n()))) for child in self.children]
         try:
             index = np.argmax(uctScore)
             return self.children[index]
@@ -141,11 +177,16 @@ class Node():
             return None
     
     #This method is here for testing purposes only - Shows the scores as well as the estimated wins and number of visits
-    def UCTShow(self, c_param=1.6):
-        uctScore = [ (c.q() / (c.n())) + c_param * np.sqrt((2 * np.log(self.n()) / (c.n()))) for c in self.children]
-        q_list = [c.q() for c in self.children]
-        n_list = [c.n() for c in self.children]
-        temp = [c.actionPlayed for c in self.children]
+    def UCTShow(self, c=1.6):
+        """Weights for the different children of the node are calcualted using 
+        the UCT algorithm. The values are printed for testing
+        Args:
+            c: constant value that can be changed but has a default of 1.6
+        """
+        uctScore = [ (child.q() / (child.n())) + c * np.sqrt((2 * np.log(self.n()) / (child.n()))) for child in self.children]
+        q_list = [child.q() for child in self.children]
+        n_list = [child.n() for child in self.children]
+        temp = [child.actionPlayed for child in self.children]
         print()
         for i in range(0,len(uctScore)):
             print(f'Action - {temp[i]} -- Weight: {uctScore[i]} -- Q Score: {q_list[i]} -- No. Visited: {n_list[i]}')
@@ -157,9 +198,6 @@ class Node():
         except Exception:
             return None
     
-    def rolloutPolicy(self, potencialMoves):
-        n_moves = len(potencialMoves)
-        return potencialMoves[np.random.randint(n_moves)]
-    
+
 
         
