@@ -1,4 +1,4 @@
-# checkerAIDiss
+# checkerAI
 This is the code for the MCTS learning agent written in python using Seoul AI gym
 
 You cann find a copy of the code at: https://github.com/chroadhouse/checkerAIDiss/edit/main/README.md
@@ -13,7 +13,7 @@ pip3 install seoulai-gym
 Once install simply 
 
 ```
-cd chechkerAIDiss
+cd chechkerAI
 
 python3 Main.py
 ```
