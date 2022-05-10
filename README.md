@@ -12,10 +12,11 @@ Or install via pip
 
 
 Once install simply 
+'''
+cd chechkerAIDiss
 
-// cd checkerAIDiss
-
-// python3 main.py
+python3 Main.oy
+'''
 
 To play the game you have 3 options 
 1: To play against the agent yourself 
