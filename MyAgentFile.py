@@ -27,7 +27,6 @@ class MyRandomAgent(Agent):
             self,
             ptype: int,
     ):
-        
         if ptype == Constants().DARK:
             name = "MyRandomAgentDark"
         elif ptype == Constants().LIGHT:
@@ -37,36 +36,29 @@ class MyRandomAgent(Agent):
     
         super().__init__(name, ptype)
     
-    #The act algorithm 
-    #Can probably get rid of the board variable and just have the board class being passed
     def act(self,gameBoard: Board,  n,move,playfromRandom) -> Tuple[int, int, int, int]:
-        """
-            input: state of the board
+        """Agent takes board and decides what move should be played on the board, this move is chosen randomly
+        Args:
+            gameBoard: Board class - represents the state of the of the enviroment
+            n: number of search space 
+            move: what move the game is on
+            playfromRandom: the value that the agent plays randomly
         """
         from_row, from_col, to_row, to_col = generate_random_move(
             gameBoard.board_list,
             self.ptype,
             len(gameBoard.board_list),
         )
-        #test.bestAction(10)
-        #print("Type is {0}".format(self.ptype))
         return from_row, from_col, to_row, to_col
-
+    
+    #This method is not used but is needed for the agent to work
     def consume(
         self,
         obs: List[List],
         reward: float,
         done: bool,
     ) -> None:
-        """Agent processes information returned by environment based on agent's latest action.
-        Random agent does not need `reward` or `done` variables, but this method is called anyway
-        when used with other agents.
 
-        Args:
-            board: information about positions of pieces.
-            reward: reward for perfomed step.
-            done: information about end of game.
-        """
         pass
 
 class MCTSAgent(Agent):
@@ -84,42 +76,36 @@ class MCTSAgent(Agent):
     
         super().__init__(name, ptype)
     
-    #The act algorithm 
-    #Can probably get rid of the board variable and just have the board class being passed
     def act(self,gameBoard,  n,move,playfromRandom) -> Tuple[int, int, int, int]:
+        """Agent takes board and and uses the MCTS algorithm to pick an action that is returned and 
+        played on the board
+        
+        Args:
+            gameBoard: Board class - represents the state of the of the enviroment
+            n: number of search space 
+            move: what move the game is on
+            playfromRandom: the value that the agent plays randomly
         """
-            input: state of the board
-        """
+        
         from_row, from_col, to_row, to_col = generate_random_move(
             gameBoard.board_list,
             self.ptype,
             len(gameBoard.board_list),
         )
+        
         if(move >playfromRandom):
-            testing = MCTS(gameBoard, self.ptype)        
-            node = testing.bestAction(n)
+            mcts = MCTS(gameBoard, self.ptype)        
+            node = mcts.search(n)
             if node != None:
-                print(node.actionPlayed)
                 return node.actionPlayed[0][0], node.actionPlayed[0][1], node.actionPlayed[1][0], node.actionPlayed[1][1]
         return from_row, from_col, to_row, to_col
-
+    #This method is not used but is needed for the agent to work
     def consume(
         self,
         obs: List[List],
         reward: float,
         done: bool,
     ) -> None:
-        """Agent processes information returned by environment based on agent's latest action.
-        Random agent does not need `reward` or `done` variables, but this method is called anyway
-        when used with other agents.
-        
-        Have a cancel on the after so many steps to stop it from runnnig forever 
-
-        Args:
-            board: information about positions of pieces.
-            reward: reward for perfomed step.
-            done: information about end of game.
-        """
         pass
 
 class MCTSAgentDark(MCTSAgent):
@@ -152,34 +138,43 @@ class KeyboardAgent(Agent):
         super().__init__(name, ptype)
     
     def act(self,gameBoard,n,move,playFromRandom) -> Tuple[int, int, int, int]:
-        """
-        Keyboard input - Take the input X and Y 
-        
-        Output the possible move
-        
+        """Agent takes board and and the player makes the move 
+        Args:
+            gameBoard: Board class - represents the state of the of the enviroment
+            n: number of search space 
+            move: what move the game is on
+            playfromRandom: the value that the agent plays randomly
         """
         from_row, from_col, to_row, to_col = generate_random_move(
             gameBoard.board_list,
             self.ptype,
             len(gameBoard.board_list),
         )
-        if(move > playFromRandom):
+        
+        #Board is printed to show the user
+        if(move >= playFromRandom):
             print(board_list2numpy(gameBoard.board_list))
             start = []
             end = []
             while True:
-                #Makes sure the move you enter is a valid move 
-                start = [int(pos) for pos in input("Enter start posistion (e.g x,y): ").split(",")]
-                end = [int(pos) for pos in input("Enter end posistion (e.g x,y): ").split(",")]
-                if(Rules.validate_move(gameBoard.board_list, start[0], start[1], end[0], end[1])):
-                   break;
-            print("Enter a valid move")
+                try:
+                    start = [int(pos) for pos in input("Enter start posistion (e.g x,y): ").split(",")]
+                    end = [int(pos) for pos in input("Enter end posistion (e.g x,y): ").split(",")]
+                    if(Rules.validate_move(gameBoard.board_list, start[0], start[1], end[0], end[1])):
+                        break
+                    else:
+                        print('Enter a valid move')
+                    
+                except Exception:
+                    print('Must be X,Y')
+               
             from_row = start[0]
             from_col = start[1]
             to_row = end[0]
             to_col = end[1]
         return from_row, from_col, to_row, to_col
     
+    #Method is not used
     def consume(
         self,
         obs: List[List],
