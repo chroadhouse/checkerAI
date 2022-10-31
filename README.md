@@ -13,7 +13,7 @@ pip3 install seoulai-gym
 Once install simply 
 
 ```
-cd chechkerAI
+cd checkerAI
 
 python3 Main.py
 ```
