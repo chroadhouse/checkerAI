@@ -19,9 +19,9 @@ python3 Main.py
 ```
 
 To play the game you have 3 options 
-1: To play against the agent yourself 
-2: watch the agent play against a random agent 
-3: Watch the agent play against a version of itself. 
+- 1: To play against the agent yourself 
+- 2: watch the agent play against a random agent 
+- 3: Watch the agent play against a version of itself. 
 
 
 Once in you will be asked:
